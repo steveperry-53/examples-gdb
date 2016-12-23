@@ -409,6 +409,81 @@ For comparison, here's the secret data from `kubectl get secret gdbsecret --outp
 
 eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJzdGV2ZTUzIiwicGFzc3dvcmQiOiJTdGV2ZURvY2tAIzE2IiwiZW1haWwiOiJzZXBlcnJ5NTNAZ21haWwuY29tIiwiYXV0aCI6ImMzUmxkbVUxTXpwVGRHVjJaVVJ2WTJ0QUl6RTIifX0=
 
+"{\"https://index.docker.io/v1/\":{\"username\":\"steve53\",\"password\":\"SteveDock@#16\",\"email\":\"seperry53@gmail.com\",\"auth\":\"c3RldmU1MzpTdGV2ZURvY2tAIzE2\"}}"
+
+
+
+(gdb) p secret.Data
+$3 = (map[string][]uint8) 0xc820535710
+(gdb) p secret.Data["http://metadata.google.internal./computeMetadata/v1/instance/attributes/google-dockercfg"]
+evaluation of this expression requires the program to have a function "malloc".
+(gdb) 
+evaluation of this expression requires the program to have a function "malloc".
+(gdb) #
+(gdb) #
+(gdb) #
+(gdb) x /16a 0xc820535710
+0xc820535710:	0x1	0x4827b23300000000
+0xc820535720:	0xc82014e000	0x0
+0xc820535730:	0x0	0x0
+0xc820535740:	0xc820535770	0x0
+0xc820535750:	0x0	0x0
+0xc820535760:	0x0	0x0
+0xc820535770:	0xc8205357a0	0x0
+0xc820535780:	0x0	0x0
+(gdb) #
+(gdb) 
+(gdb) #
+(gdb) x /32a 0xc82014e000
+0xc82014e000:	0x2b	0x27e9e90
+0xc82014e010:	0xa	0x0
+0xc82014e020:	0x0	0x0
+0xc82014e030:	0x0	0x0
+0xc82014e040:	0x0	0x0
+0xc82014e050:	0x0	0x0
+0xc82014e060:	0x0	0x0
+0xc82014e070:	0x0	0x0
+0xc82014e080:	0x0	0xc8200c4700
+0xc82014e090:	0x95	0xf5
+0xc82014e0a0:	0x0	0x0
+0xc82014e0b0:	0x0	0x0
+0xc82014e0c0:	0x0	0x0
+0xc82014e0d0:	0x0	0x0
+0xc82014e0e0:	0x0	0x0
+0xc82014e0f0:	0x0	0x0
+(gdb) #
+(gdb) #
+(gdb) x /10cb 0xc82014e000
+0xc82014e000:	43 '+'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'
+0xc82014e008:	-112 '\220'	-98 '\236'
+(gdb) x /10cb 0x27e9e90   
+0x27e9e90:	46 '.'	100 'd'	111 'o'	99 'c'	107 'k'	101 'e'	114 'r'	99 'c'
+0x27e9e98:	102 'f'	103 'g'
+(gdb) x /160cb 0xc8200c4700
+0xc8200c4700:	123 '{'	34 '"'	104 'h'	116 't'	116 't'	112 'p'	115 's'	58 ':'
+0xc8200c4708:	47 '/'	47 '/'	105 'i'	110 'n'	100 'd'	101 'e'	120 'x'	46 '.'
+0xc8200c4710:	100 'd'	111 'o'	99 'c'	107 'k'	101 'e'	114 'r'	46 '.'	105 'i'
+0xc8200c4718:	111 'o'	47 '/'	118 'v'	49 '1'	47 '/'	34 '"'	58 ':'	123 '{'
+0xc8200c4720:	34 '"'	117 'u'	115 's'	101 'e'	114 'r'	110 'n'	97 'a'	109 'm'
+0xc8200c4728:	101 'e'	34 '"'	58 ':'	34 '"'	115 's'	116 't'	101 'e'	118 'v'
+0xc8200c4730:	101 'e'	53 '5'	51 '3'	34 '"'	44 ','	34 '"'	112 'p'	97 'a'
+0xc8200c4738:	115 's'	115 's'	119 'w'	111 'o'	114 'r'	100 'd'	34 '"'	58 ':'
+0xc8200c4740:	34 '"'	83 'S'	116 't'	101 'e'	118 'v'	101 'e'	68 'D'	111 'o'
+0xc8200c4748:	99 'c'	107 'k'	64 '@'	35 '#'	49 '1'	54 '6'	34 '"'	44 ','
+0xc8200c4750:	34 '"'	101 'e'	109 'm'	97 'a'	105 'i'	108 'l'	34 '"'	58 ':'
+0xc8200c4758:	34 '"'	115 's'	101 'e'	112 'p'	101 'e'	114 'r'	114 'r'	121 'y'
+0xc8200c4760:	53 '5'	51 '3'	64 '@'	103 'g'	109 'm'	97 'a'	105 'i'	108 'l'
+0xc8200c4768:	46 '.'	99 'c'	111 'o'	109 'm'	34 '"'	44 ','	34 '"'	97 'a'
+0xc8200c4770:	117 'u'	116 't'	104 'h'	34 '"'	58 ':'	34 '"'	99 'c'	51 '3'
+0xc8200c4778:	82 'R'	108 'l'	100 'd'	109 'm'	85 'U'	49 '1'	77 'M'	122 'z'
+0xc8200c4780:	112 'p'	84 'T'	100 'd'	71 'G'	86 'V'	50 '2'	90 'Z'	85 'U'
+0xc8200c4788:	82 'R'	118 'v'	89 'Y'	50 '2'	116 't'	65 'A'	73 'I'	122 'z'
+0xc8200c4790:	69 'E'	50 '2'	34 '"'	125 '}'	125 '}'	0 '\000'	0 '\000'	0 '\000'
+0xc8200c4798:	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'
+
+
+
+
 
     
 ## References
@@ -417,9 +492,9 @@ https://golang.org/doc/gdb
 
 https://blog.codeship.com/using-gdb-debugger-with-go/
 
-
-
 http://stackoverflow.com/questions/31847549/golang-computing-the-memory-footprint-or-byte-length-of-a-map
+
+https://golang.org/src/runtime/hashmap.go#L105
 
 
 
