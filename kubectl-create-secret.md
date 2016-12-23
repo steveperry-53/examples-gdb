@@ -229,7 +229,7 @@ It looks like we have four strings of length 0x9, 0x7, 0x13, 0xd.
 Take a look at each one.
 
 Show 9 character-formatted bytes starting at 0x7fffffffdeca.
-
+#
 (gdb) **x /9cb 0x7fffffffdeca**
 
 0x7fffffffdeca:	103 'g'	100 'd'	98 'b'	115 's'	101 'e'	99 'c'	114 'r'	101 'e'
@@ -254,6 +254,163 @@ Similarly, find the values of other fields of generator.
 0xc82011bb28:	51 '3'	64 '@'	103 'g'	109 'm'	97 'a'	105 'i'	108 'l'	46 '.'
 0xc82011bb30:	99 'c'	111 'o'	109 'm'
 
+## Next steps
+
+Next we want to see the Secret object being created.
+
+This source file /pkg/kubectl/secret_for_docker_registry.go has these functions:
+
+    func (s SecretForDockerRegistryGeneratorV1) Generate(genericParams map[string]interface{}) (runtime.Object, error) {
+    func (s SecretForDockerRegistryGeneratorV1) StructuredGenerate() (runtime.Object, error) {
+    
+(gdb) **b k8s.io/kubernetes/pkg/kubectl.SecretForDockerRegistryGeneratorV1.StructuredGenerate**
+
+Breakpoint 1 at 0x7bc470: file /go/src/k8s.io/kubernetes/_output/dockerized/go/src/k8s.io/kubernetes/pkg/kubectl/secret_for_docker_registry.go, line 73.
+
+(gdb) **b k8s.io/kubernetes/pkg/kubectl.SecretForDockerRegistryGeneratorV1.Generate**          
+
+Breakpoint 2 at 0x7bbcd0: file /go/src/k8s.io/kubernetes/_output/dockerized/go/src/k8s.io/kubernetes/pkg/kubectl/secret_for_docker_registry.go, line 49.
+
+Hit breakpoint 1.
+
+(gdb) **n** several times
+
+(gdb) info locals
+
+secret = 0xc82050e000
+err = {tab = 0x0, data = 0x0}
+err = {tab = 0x0, data = 0x0}
+dockercfgContent = {
+  array = 0xc8200f4500 "{\"https://index.docker.io/v1/\":{\"username\":\"steve53\",\"password\":\"SteveDock@#16\",\"email\":\"seperry53@gmail.com\",\"auth\":\"c3RldmU1MzpTdGV2ZURvY2tAIzE2\"}}", len = 149, cap = 245}
+  
+We are in the function that actually creates the Secret API object. Notice
+`secret := &api.Secret()` in the code below.
+
+    func (s SecretForDockerRegistryGeneratorV1) StructuredGenerate() (runtime.Object, error) {
+	if err := s.validate(); err != nil {
+		return nil, err
+	}
+	dockercfgContent, err := handleDockercfgContent(s.Username, s.Password, s.Email, s.Server)
+	if err != nil {
+		return nil, err
+	}
+	secret := &api.Secret{}
+	secret.Name = s.Name
+	secret.Type = api.SecretTypeDockercfg
+	secret.Data = map[string][]byte{}
+	secret.Data[api.DockerConfigKey] = dockercfgContent
+	return secret, nil
+    }
+
+And look what we have in the dockercfgContent local variable:
+
+    "{\"https://index.docker.io/v1/\":{\"username\":\"steve53\",\"password\":\"SteveDock@#16\",\"email\":\"seperry53@gmail.com\",\"auth\":\"c3RldmU1MzpTdGV2ZURvY2tAIzE2\"}}"
+    
+Let's see if we can inspect the fields of secret.
+
+pkg/api/types.go has this:
+
+    type Secret struct {
+	metav1.TypeMeta
+	ObjectMeta
+	Data map[string][]byte
+	Type SecretType
+    }
+
+The first field is of type metav1.TypeMeta. The second field is of type ObjectMeta.
+These two fields do not have names. Why? I'll take a guess. Because ObjectMeta has
+no name, we can refer to its Name field as if it were a field of Secret.
+
+    secret.Name = s.Name
+    
+     type ObjectMeta struct {
+	Name string
+	GenerateName string
+	Namespace string
+	SelfLink string
+	UID types.UID
+	ResourceVersion string
+	Generation int64
+	CreationTimestamp metav1.Time
+	DeletionTimestamp *metav1.Time
+	DeletionGracePeriodSeconds *int64
+	Labels map[string]string
+	Annotations map[string]string
+	OwnerReferences []metav1.OwnerReference
+	Finalizers []string
+	ClusterName string
+    }
+    
+    type TypeMeta struct {
+	APIVersion string
+	Kind string
+    }
+
+
+(gdb) **p secret**
+
+$9 = (struct k8s.io/kubernetes/pkg/api.Secret *) 0xc82050e000
+
+(gdb) **x /64a 0xc82050e000**
+
+0xc82050e000:	0x0	0x0
+0xc82050e010:	0x0	0x0
+0xc82050e020:	0x7fffffffdeca	0x9    // secret.Name
+0xc82050e030:	0x0	0x0
+0xc82050e040:	0x0	0x0
+0xc82050e050:	0x0	0x0
+0xc82050e060:	0x0	0x0
+0xc82050e070:	0x0	0x0
+0xc82050e080:	0x0	0x0
+0xc82050e090:	0x0	0x0
+
+0xc82050e0a0:	0x0	0x0
+0xc82050e0b0:	0x0	0x0
+0xc82050e0c0:	0x0	0x0
+0xc82050e0d0:	0x0	0x0
+0xc82050e0e0:	0x0	0x0
+0xc82050e0f0:	0x0	0x0
+0xc82050e100:	0xc8205229f0	0x29194b0
+0xc82050e110:	0x17	0x0
+0xc82050e120:	0xc82050e240	0xdeaddeaddeaddead
+0xc82050e130:	0x0	0xcccc
+0xc82050e140:	0xc8202fb500	0xc8201299e0
+0xc82050e150:	0x5	0x5
+0xc82050e160:	0xc8203ce7d0	0x0
+0xc82050e170:	0x5	0xc820129a00
+0xc82050e180:	0x5	0x5
+0xc82050e190:	0xc8203ce820	0x0
+0xc82050e1a0:	0x5	0x0
+0xc82050e1b0:	0x0	0x0
+0xc82050e1c0:	0x0	0xc82000f2e0
+0xc82050e1d0:	0x2	0x2
+0xc82050e1e0:	0x0	0x0
+0xc82050e1f0:	0x0	0xc8200b6340
+
+Show secret.name.
+
+(gdb) **x /9cb 0x7fffffffdeca** 
+
+0x7fffffffdeca:	103 'g'	100 'd'	98 'b'	115 's'	101 'e'	99 'c'	114 'r'	101 'e'
+0x7fffffffded2:	116 't'
+
+None of the other fields of the ObjectMetadata are filled in, so it's no
+surprize that we didn't find anything else.
+
+We cam get secret.Type this way.
+
+(gdb) **p secret.Type**
+
+$7 = {str = 0x29194b0 "kubernetes.io/dockercfg", len = 23}
+
+What about secret.Data?
+
+For comparison, here's the secret data from `kubectl get secret gdbsecret --output=yaml`.
+
+eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJzdGV2ZTUzIiwicGFzc3dvcmQiOiJTdGV2ZURvY2tAIzE2IiwiZW1haWwiOiJzZXBlcnJ5NTNAZ21haWwuY29tIiwiYXV0aCI6ImMzUmxkbVUxTXpwVGRHVjJaVVJ2WTJ0QUl6RTIifX0=
+
+
+    
 ## References
 
 https://golang.org/doc/gdb
@@ -262,7 +419,7 @@ https://blog.codeship.com/using-gdb-debugger-with-go/
 
 
 
-
+http://stackoverflow.com/questions/31847549/golang-computing-the-memory-footprint-or-byte-length-of-a-map
 
 
 
