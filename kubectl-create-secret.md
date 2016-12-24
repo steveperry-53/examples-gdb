@@ -413,29 +413,16 @@ eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJzdGV2ZTUzIiwicGFzc3dv
 
 
 
-(gdb) p secret.Data
+(gdb) **p secret.Data**
+
 $3 = (map[string][]uint8) 0xc820535710
-(gdb) p secret.Data["http://metadata.google.internal./computeMetadata/v1/instance/attributes/google-dockercfg"]
+
+(gdb) **p secret.Data["http://metadata.google.internal./computeMetadata/v1/instance/attributes/google-dockercfg"]**
+
 evaluation of this expression requires the program to have a function "malloc".
-(gdb) 
-evaluation of this expression requires the program to have a function "malloc".
-(gdb) #
-(gdb) #
-(gdb) #
-(gdb) x /16a 0xc820535710
-0xc820535710:	0x1	0x4827b23300000000
-0xc820535720:	0xc82014e000	0x0
-0xc820535730:	0x0	0x0
-0xc820535740:	0xc820535770	0x0
-0xc820535750:	0x0	0x0
-0xc820535760:	0x0	0x0
-0xc820535770:	0xc8205357a0	0x0
-0xc820535780:	0x0	0x0
-(gdb) #
-(gdb) 
-(gdb) #
-(gdb) x /32a 0xc82014e000
-0xc82014e000:	0x2b	0x27e9e90
+
+(gdb) **x /32a 0xc82014e000**
+0xc82014e000:	0x2b	0x27e9e90    // key of length 0xa
 0xc82014e010:	0xa	0x0
 0xc82014e020:	0x0	0x0
 0xc82014e030:	0x0	0x0
@@ -443,7 +430,7 @@ evaluation of this expression requires the program to have a function "malloc".
 0xc82014e050:	0x0	0x0
 0xc82014e060:	0x0	0x0
 0xc82014e070:	0x0	0x0
-0xc82014e080:	0x0	0xc8200c4700
+0xc82014e080:	0x0	0xc8200c4700   // value of length 0x95
 0xc82014e090:	0x95	0xf5
 0xc82014e0a0:	0x0	0x0
 0xc82014e0b0:	0x0	0x0
@@ -451,15 +438,18 @@ evaluation of this expression requires the program to have a function "malloc".
 0xc82014e0d0:	0x0	0x0
 0xc82014e0e0:	0x0	0x0
 0xc82014e0f0:	0x0	0x0
-(gdb) #
-(gdb) #
-(gdb) x /10cb 0xc82014e000
-0xc82014e000:	43 '+'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'
-0xc82014e008:	-112 '\220'	-98 '\236'
-(gdb) x /10cb 0x27e9e90   
+
+Show the key:
+
+(gdb) **x /10cb 0x27e9e90**
+
 0x27e9e90:	46 '.'	100 'd'	111 'o'	99 'c'	107 'k'	101 'e'	114 'r'	99 'c'
 0x27e9e98:	102 'f'	103 'g'
-(gdb) x /160cb 0xc8200c4700
+
+Show the value:
+
+(gdb) **x /160cb 0xc8200c4700**
+
 0xc8200c4700:	123 '{'	34 '"'	104 'h'	116 't'	116 't'	112 'p'	115 's'	58 ':'
 0xc8200c4708:	47 '/'	47 '/'	105 'i'	110 'n'	100 'd'	101 'e'	120 'x'	46 '.'
 0xc8200c4710:	100 'd'	111 'o'	99 'c'	107 'k'	101 'e'	114 'r'	46 '.'	105 'i'
@@ -478,14 +468,8 @@ evaluation of this expression requires the program to have a function "malloc".
 0xc8200c4778:	82 'R'	108 'l'	100 'd'	109 'm'	85 'U'	49 '1'	77 'M'	122 'z'
 0xc8200c4780:	112 'p'	84 'T'	100 'd'	71 'G'	86 'V'	50 '2'	90 'Z'	85 'U'
 0xc8200c4788:	82 'R'	118 'v'	89 'Y'	50 '2'	116 't'	65 'A'	73 'I'	122 'z'
-0xc8200c4790:	69 'E'	50 '2'	34 '"'	125 '}'	125 '}'	0 '\000'	0 '\000'	0 '\000'
-0xc8200c4798:	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'
+0xc8200c4790:	69 'E'	50 '2'	34 '"'	125 '}'	125 '}'	0 '\000'	...
 
-
-
-
-
-    
 ## References
 
 https://golang.org/doc/gdb
