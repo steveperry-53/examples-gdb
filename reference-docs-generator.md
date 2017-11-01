@@ -20,7 +20,7 @@ Thread 1 "gen-apidocs" hit Breakpoint 1, ...
 
 If you like, set a second breakpoint at a line number in the source file.
 
-(gdb) **b <line number>**
+(gdb) **b line-number**
 
 (gdb) **p config.ResourceCategories.array[0].Resources.array[0]**
 
@@ -28,7 +28,7 @@ $23 = (struct github.com/kubernetes-incubator/reference-docs/gen-apidocs/generat
 
 (gdb) **set print pretty on**
 
-(gdb) p *(config.ResourceCategories.array[0].Resources.array[2])
+(gdb) `p *(config.ResourceCategories.array[0].Resources.array[2])`
 
 $27 = {
   Name = 0xc4201b2170 "DaemonSet", 
@@ -52,7 +52,7 @@ $27 = {
   Definition = 0x0
 }
 
-gdb) p *(config.ResourceCategories.array[1].Resources.array[2])
+(gdb) `p *(config.ResourceCategories.array[1].Resources.array[2])`
 
 $28 = {
   Name = 0xc4201b23f8 "Service", 
@@ -76,7 +76,7 @@ $28 = {
   Definition = 0x0
 }
 
-(gdb) p *(config.ResourceCategories.array[2].Resources.array[2])
+(gdb) `p *(config.ResourceCategories.array[2].Resources.array[2])`
 
 $29 = {
   Name = 0xc4202cbf00 "PersistentVolumeClaim", 
