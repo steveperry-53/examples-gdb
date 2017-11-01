@@ -22,7 +22,8 @@ If you like, set a second breakpoint at a line number in the source file.
 $23 = (struct github.com/kubernetes-incubator/reference-docs/gen-apidocs/generators/api.Resource *) 0xc4200fe0c0
 
 (gdb) **set print pretty on**
-(gdb) **p *(config.ResourceCategories.array[0].Resources.array[2])**
+
+(gdb) p *(config.ResourceCategories.array[0].Resources.array[2])
 $27 = {
   Name = 0xc4201b2170 "DaemonSet", 
   Version = 0xc4201b2188 "v1beta2", 
@@ -45,7 +46,7 @@ $27 = {
   Definition = 0x0
 }
 
-gdb) **p *(config.ResourceCategories.array[1].Resources.array[2])**
+gdb) p *(config.ResourceCategories.array[1].Resources.array[2])
 $28 = {
   Name = 0xc4201b23f8 "Service", 
   Version = 0xc4201b2410 "v1", 
@@ -68,7 +69,7 @@ $28 = {
   Definition = 0x0
 }
 
-(gdb) **p *(config.ResourceCategories.array[2].Resources.array[2])**
+(gdb) p *(config.ResourceCategories.array[2].Resources.array[2])
 $29 = {
   Name = 0xc4202cbf00 "PersistentVolumeClaim", 
   Version = 0xc4201b24d0 "v1", 
