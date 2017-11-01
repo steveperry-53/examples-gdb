@@ -30,7 +30,7 @@ $23 = (struct github.com/kubernetes-incubator/reference-docs/gen-apidocs/generat
 
 (gdb) `p *(config.ResourceCategories.array[0].Resources.array[2])`
 
-$27 = {
+`$27 = {
   Name = 0xc4201b2170 "DaemonSet", 
   Version = 0xc4201b2188 "v1beta2", 
   Group = 0xc4201b21a0 "apps", 
@@ -50,7 +50,7 @@ $27 = {
   IncludeDescription = 0x0 "", 
   LinkToMd = 0x0 "", 
   Definition = 0x0
-}
+}`
 
 (gdb) `p *(config.ResourceCategories.array[1].Resources.array[2])`
 
