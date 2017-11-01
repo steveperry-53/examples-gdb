@@ -109,3 +109,7 @@ $31 = {
   len = 9, 
   cap = 9
 }
+
+Here's a command that you can use to inspect a field of a Definition object.
+
+(gdb) `p (*(config.ResourceCategories.array[4].Resources.array[2]).Definition).Resource`
